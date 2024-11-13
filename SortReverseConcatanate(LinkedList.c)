@@ -1,0 +1,141 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct node {
+    int value;
+    struct node *next;
+};
+typedef struct node *NODE;
+
+NODE getnode() {
+    NODE ptr = (NODE)malloc(sizeof(struct node));
+    if (ptr == NULL) {
+        printf("Memory not allocated\n");
+        return NULL;
+    }
+    ptr->next = NULL;
+    return ptr;
+}
+
+NODE reverse(NODE first) {
+    NODE current = NULL, temp;
+    while (first != NULL) {
+        temp = first;
+        first = first->next;
+        temp->next = current;
+        current = temp;
+    }
+    return current;
+}
+
+NODE sort(NODE first) {
+    if (first == NULL) return NULL;
+
+    NODE temp1, temp2;
+    int x;
+
+    for (temp1 = first; temp1 != NULL; temp1 = temp1->next) {
+        for (temp2 = temp1->next; temp2 != NULL; temp2 = temp2->next) {
+            if (temp1->value > temp2->value) {
+                x = temp1->value;
+                temp1->value = temp2->value;
+                temp2->value = x;
+            }
+        }
+    }
+    return first;
+}
+
+NODE concatenate(NODE first1, NODE first2) {
+    if (first1 == NULL) {
+        return first2;
+    }
+    if (first2 == NULL) {
+        return first1;
+    }
+
+    NODE last = first1;
+    while (last->next != NULL) {
+        last = last->next;
+    }
+    last->next = first2;
+    return first1;
+}
+
+void display(NODE first) {
+    if (first == NULL) {
+        printf("Linked list is empty\n");
+        return;
+    }
+
+    NODE temp = first;
+    while (temp != NULL) {
+        printf("%d -> ", temp->value);
+        temp = temp->next;
+    }
+    printf("NULL\n");
+}
+
+NODE insert_end(NODE first, int value) {
+    NODE new_node = getnode();
+    new_node->value = value;
+
+    if (first == NULL) {
+        return new_node;
+    }
+
+    NODE temp = first;
+    while (temp->next != NULL) {
+        temp = temp->next;
+    }
+    temp->next = new_node;
+    return first;
+}
+
+int main() {
+    NODE list1 = NULL, list2 = NULL;
+    int n, value;
+
+    printf("Enter the number of elements for list1: ");
+    scanf("%d", &n);
+
+    printf("Enter the elements for list1:\n");
+    for (int i = 0; i < n; i++) {
+        printf("Enter element %d: ", i + 1);
+        scanf("%d", &value);
+        list1 = insert_end(list1, value);
+    }
+
+    printf("\nOriginal list1:\n");
+    display(list1);
+
+
+    list1 = reverse(list1);
+    printf("\nReversed list1:\n");
+    display(list1);
+
+    list1 = sort(list1);
+    printf("\nSorted list1:\n");
+    display(list1);
+
+
+    printf("\nEnter the number of elements for list2: ");
+    scanf("%d", &n);
+
+    printf("Enter the elements for list2:\n");
+    for (int i = 0; i < n; i++) {
+        printf("Enter element %d: ", i + 1);
+        scanf("%d", &value);
+        list2 = insert_end(list2, value);
+    }
+
+    printf("\nOriginal list2:\n");
+    display(list2);
+
+    NODE concatenated = concatenate(list1, list2);
+    printf("\nConcatenated list:\n");
+    display(concatenated);
+
+    return 0;
+}
+
